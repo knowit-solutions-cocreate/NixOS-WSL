@@ -1,28 +1,22 @@
-{ config, pkgs, lib, ... }:
-with builtins; with lib;
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with builtins;
+with lib; let
   cfg = config.wsl.tarball;
 
   icon = ../assets/NixOS-WSL.ico;
   iconPath = "/etc/nixos.ico";
 
   wsl-distribution-conf = pkgs.writeText "wsl-distribution.conf" (
-    generators.toINI { } {
+    generators.toINI {} {
       oobe.defaultName = "NixOS";
       shortcut.icon = iconPath;
     }
   );
-
-  nixosWslBranch =
-    let
-      # Use the nix parser conveniently built into nix
-      flake = import ../flake.nix;
-      url = flake.inputs.nixpkgs.url;
-      version = lib.removePrefix "github:NixOS/nixpkgs/nixos-" url;
-    in
-    if version == "unstable"
-    then "main"
-    else "release-" + version;
 
   defaultConfig = pkgs.writeText "default-configuration.nix" ''
     # Edit this configuration file to define what should be installed on
@@ -40,7 +34,42 @@ let
         <nixos-wsl/modules>
       ];
 
-      wsl.enable = true;
+      nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+
+      wsl = {
+        enable = true;
+        podman.enable = true;
+        vscode-remote.enable = true;
+        startMenuLaunchers = true;
+      };
+
+      # Add packages from nixpkgs here, search in https://search.nixos.org/ unstable branch
+      # for available packages
+      environment.systemPackages = with pkgs; [
+        vim
+        wget
+        sops
+        lazygit
+        gh
+        devenv
+        direnv
+      ];
+
+      # Enable direnv integration
+      programs = {
+        git.enable = true;
+        direnv = {
+          enable = true;
+          nix-direnv.enable = true;
+        };
+
+        bash.completion.enable = true;
+        starship.enable = true;
+
+      };
+
+      # Configure your username here!
       wsl.defaultUser = "${config.wsl.defaultUser}";
 
       # This value determines the NixOS release from which the default
@@ -52,8 +81,7 @@ let
       system.stateVersion = "${config.system.nixos.release}"; # Did you read the comment?
     }
   '';
-in
-{
+in {
   options.wsl.tarball = {
     configPath = mkOption {
       type = types.nullOr types.path;
@@ -99,20 +127,24 @@ in
           --substituters ""
 
         echo "[NixOS-WSL] Adding channel..."
-        nixos-enter --root "$root" --command 'HOME=/root nix-channel --add https://github.com/nix-community/NixOS-WSL/archive/refs/heads/${nixosWslBranch}.tar.gz nixos-wsl'
+        nixos-enter --root "$root" --command 'HOME=/root nix-channel --add https://github.com/nix-community/NixOS-WSL/archive/refs/heads/main.tar.gz nixos-wsl'
 
         echo "[NixOS-WSL] Adding wsl-distribution.conf"
         install -Dm644 ${wsl-distribution-conf} "$root/etc/wsl-distribution.conf"
         install -Dm644 ${icon} "$root${iconPath}"
 
         echo "[NixOS-WSL] Adding default config..."
-        ${if cfg.configPath == null then ''
-          install -Dm644 ${defaultConfig} "$root/etc/nixos/configuration.nix"
-        '' else ''
-          mkdir -p "$root/etc/nixos"
-          cp -R ${lib.cleanSource cfg.configPath}/. "$root/etc/nixos"
-          chmod -R u+w "$root/etc/nixos"
-        ''}
+        ${
+          if cfg.configPath == null
+          then ''
+            install -Dm644 ${defaultConfig} "$root/etc/nixos/configuration.nix"
+          ''
+          else ''
+            mkdir -p "$root/etc/nixos"
+            cp -R ${lib.cleanSource cfg.configPath}/. "$root/etc/nixos"
+            chmod -R u+w "$root/etc/nixos"
+          ''
+        }
 
         echo "[NixOS-WSL] Compressing..."
         tar -C "$root" \
