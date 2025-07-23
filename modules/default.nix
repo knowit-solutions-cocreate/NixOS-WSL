@@ -3,10 +3,12 @@
     ./build-tarball.nix
     ./docker-desktop.nix
     ./interop.nix
+    ./podman.nix
     ./recovery.nix
     ./systemd
     ./usbip.nix
     ./version.nix
+    ./vscode-remote.nix
     ./welcome.nix
     ./wsl-conf.nix
     ./wsl-distro.nix
