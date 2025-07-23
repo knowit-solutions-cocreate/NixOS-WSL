@@ -15,11 +15,12 @@ Run the following from powershell:
 
 1. Enable WSL if you haven't done already:
 
-  - ```powershell
-    wsl --install --no-distribution
-    ```
+- ```powershell
+  wsl --install --no-distribution
+  ```
 
-2. Download `nixos.wsl` from [the latest release](https://github.com/nix-community/NixOS-WSL/releases/latest).
+2. Download `nixos.wsl` from
+   [the latest release](https://github.com/nix-community/NixOS-WSL/releases/latest).
 
 3. Double-click the file you just downloaded (requires WSL >= 2.4.4)
 
@@ -29,8 +30,14 @@ Run the following from powershell:
   wsl -d NixOS
   ```
 
-For more detailed instructions, [refer to the documentation](https://nix-community.github.io/NixOS-WSL/install.html).
+For more detailed instructions,
+[refer to the documentation](https://nix-community.github.io/NixOS-WSL/install.html).
+
+## Developing this WSL For Cocreate
+
+To change the default config please edit `modules/build-tarball.nix`
 
 ## License
 
-Apache License, Version 2.0. See `LICENSE` or <http://www.apache.org/licenses/LICENSE-2.0.html> for details.
+Apache License, Version 2.0. See `LICENSE` or
+<http://www.apache.org/licenses/LICENSE-2.0.html> for details.
