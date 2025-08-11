@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 with builtins;
 with lib; {
@@ -22,9 +21,10 @@ with lib; {
     };
   };
 
-  config = let
-    cfg = config.wsl.docker;
-  in
+  config =
+    let
+      cfg = config.wsl.docker;
+    in
     mkMerge [
       (mkIf (config.wsl.enable && cfg.enable) {
         # Enable container support and Docker
