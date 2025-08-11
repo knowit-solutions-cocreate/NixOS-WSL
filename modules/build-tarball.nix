@@ -1,7 +1,8 @@
-{ config
-, pkgs
-, lib
-, ...
+{
+  config,
+  pkgs,
+  lib,
+  ...
 }:
 with builtins;
 with lib; let
@@ -11,7 +12,7 @@ with lib; let
   iconPath = "/etc/nixos.ico";
 
   wsl-distribution-conf = pkgs.writeText "wsl-distribution.conf" (
-    generators.toINI { } {
+    generators.toINI {} {
       oobe.defaultName = "NixOS";
       shortcut.icon = iconPath;
     }
@@ -38,7 +39,7 @@ with lib; let
 
       wsl = {
         enable = true;
-        podman.enable = true;
+        docker.enable = true;
         vscode-remote.enable = true;
         startMenuLaunchers = true;
       };
@@ -80,8 +81,7 @@ with lib; let
       system.stateVersion = "${config.system.nixos.release}"; # Did you read the comment?
     }
   '';
-in
-{
+in {
   options.wsl.tarball = {
     configPath = mkOption {
       type = types.nullOr types.path;
