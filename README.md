@@ -30,12 +30,36 @@ Run the following from powershell:
   wsl -d NixOS
   ```
 
+## First time use
+
+1. Update the packages (similar to `apt update`)
+
+```bash
+sudo nix-channel update
+```
+
+2. Boostrap the current config (found in `/etc/nixos/configuration.nix`)
+
+```bash
+sudo nixos-rebuild switch
+```
+
 For more detailed instructions,
 [refer to the documentation](https://nix-community.github.io/NixOS-WSL/install.html).
 
 ## Developing this WSL For Cocreate
 
 To change the default config please edit `modules/build-tarball.nix`
+
+build the wsl locally using 
+
+```bash
+sudo nix run .#nixosConfigurations.default.config.system.build.tarballBuilder
+```
+
+then the resulting `nixos.wsl` can be imported as shown above.
+
+
 
 ## License
 

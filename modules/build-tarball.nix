@@ -33,13 +33,27 @@ with lib; let
         <nixos-wsl/modules>
       ];
 
-      nix.settings.experimental-features = [ "nix-command" "flakes" ];
+      nix.settings = {
+        experimental-features = [ "nix-command" "flakes" ];
+        extra-substituters = [
+          "https://devenv.cachix.org"
+        ];
+        extra-trusted-public-keys = [
+          "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
+        ];
+      };
+      virtualisation = {
+        containers.enable = true;
+        docker.enable = true;
+      };
 
+      # Add user to dockergroup (simple but insecure)
+      users.groups.docker.members = [
+          "${config.wsl.defaultUser}"
+      ];
 
       wsl = {
         enable = true;
-        podman.enable = true;
-        vscode-remote.enable = true;
         startMenuLaunchers = true;
       };
 
@@ -50,10 +64,16 @@ with lib; let
         wget
         sops
         lazygit
+        lazydocker
         gh
         devenv
         direnv
       ];
+
+      # Enabled dynamically linked executables
+      programs.nix-ld = {
+        enable = true;
+      };
 
       # Enable direnv integration
       programs = {
