@@ -44,6 +44,12 @@ in
 
     services.udev.enable = true;
 
+    wsl.extraBin = [
+      { src = "${pkgs.coreutils}/bin/cat"; }
+      { src = "${pkgs.coreutils}/bin/ls"; }
+      { src = "${pkgs.kmod}/bin/modprobe"; }
+    ];
+
     systemd = {
       targets.usbip = {
         description = "USBIP";
@@ -65,6 +71,7 @@ in
           ip="${cfg.snippetIpAddress}"
 
           echo "Starting auto attach for busid $busid on $ip."
+          # shellcheck disable=SC1091
           source ${usbipd-win-auto-attach} "$ip" "$busid"
         '';
       };
