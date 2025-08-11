@@ -54,7 +54,6 @@ with lib; let
 
       wsl = {
         enable = true;
-        vscode-remote.enable = true;
         startMenuLaunchers = true;
       };
 
@@ -70,6 +69,11 @@ with lib; let
         devenv
         direnv
       ];
+
+      # Enabled dynamically linked executables
+      programs.nix-ld = {
+        enable = true;
+      };
 
       # Enable direnv integration
       programs = {
