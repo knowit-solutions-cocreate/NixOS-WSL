@@ -25,21 +25,23 @@ with lib; {
   config = let
     cfg = config.wsl.docker;
   in
-    mkIf (config.wsl.enable && cfg.enable) {
-      # Enable container support and Docker
-      virtualisation.containers.enable = true;
-      virtualisation.docker = {
-        enable = true;
-      };
+    mkMerge [
+      (mkIf (config.wsl.enable && cfg.enable) {
+        # Enable container support and Docker
+        virtualisation.containers.enable = true;
+        virtualisation.docker = {
+          enable = true;
+        };
 
-      # Install container management tools
-      environment.systemPackages = cfg.extraPackages;
-    };
+        # Install container management tools
+        environment.systemPackages = cfg.extraPackages;
+      })
 
-    mkIf (config.wsl.enable && cfg.enable && cfg.addUserToDockerGroup) {
-      # Add user to docker group. Enabled by default but less secure
-      users.groups.docker.members = [
-        config.wsl.defaultUser
-      ];
-    };
+      (mkIf (config.wsl.enable && cfg.enable && cfg.addUserToDockerGroup) {
+        # Add user to docker group. Enabled by default but less secure
+        users.groups.docker.members = [
+          config.wsl.defaultUser
+        ];
+      })
+    ];
 }
