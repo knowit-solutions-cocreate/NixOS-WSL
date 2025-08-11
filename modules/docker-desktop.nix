@@ -1,6 +1,10 @@
 { config, lib, pkgs, ... }:
 with builtins; with lib; {
 
+  imports = [
+    (mkRenamedOptionModule [ "wsl" "docker" ] [ "wsl" "docker-desktop" ])
+  ];
+
   options.wsl.docker-desktop = with types; {
     enable = mkEnableOption "Docker Desktop integration";
   };
