@@ -35,7 +35,7 @@ Run the following from powershell:
 1. Update the packages (similar to `apt update`)
 
 ```bash
-sudo nix-channel update
+sudo nix-channel --update
 ```
 
 2. Boostrap the current config (found in `/etc/nixos/configuration.nix`)
