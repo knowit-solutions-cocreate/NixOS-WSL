@@ -2,7 +2,8 @@ name: "Release"
 
 on:
   push:
-    tags: []
+    tags:
+      - "*"
 
 jobs:
   build:
@@ -16,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download Tarball 📥
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: tarball
 
@@ -25,7 +26,7 @@ jobs:
           sha256sum nixos.wsl > nixos.wsl.sha256
 
       - name: Attach to Release 📎
-        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2
+        uses: softprops/action-gh-release@6cbd405e2c4e67a21c47fa9e383d020e4e28b836 # v2.3.3
         with:
           files: |
             nixos.wsl
